@@ -3,6 +3,10 @@ require rust-llvm.inc
 
 LIC_FILES_CHKSUM = "file://LICENSE.TXT;md5=e825e017edc35cfd58e26116e5251771"
 
+SRC_URI += " \
+	    file://rust-${PV}/001_fix_cmake_dependency.patch;patch=1 \
+        "
+
 do_install_prepend () {
 	# the install does a sed on this without installing the file
 	# we don't need it for anything

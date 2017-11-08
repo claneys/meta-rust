@@ -21,11 +21,14 @@ EXTRA_OECMAKE = " \
     -DLLVM_BUILD_TESTS=OFF \
     -DLLVM_INCLUDE_TESTS=OFF \
     -DLLVM_TARGET_ARCH=${TARGET_ARCH} \
+    ${@base_conditional('PN', 'rust-llvm', '-DLLVM_TABLEGEN=${STAGING_DIR_NATIVE}/${bindir}/llvm-tblgen', '',d)} \
 "
 
 # The debug symbols are huge here (>2GB) so suppress them since they
 # provide almost no value. If you really need them then override this
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
+DEPENDS += " ${@base_conditional('PN', 'rust-llvm', 'rust-llvm-native', '',d)}"
 
 do_compile_prepend_class-target() {
     # Fix paths in llvm-config
@@ -50,7 +53,7 @@ SYSROOT_PREPROCESS_FUNCS_append_class-native = " llvm_native_sysroot_preprocess"
 llvm_sysroot_preprocess() {
     install -d ${SYSROOT_DESTDIR}${bindir}
     cp ${B}/NATIVE/bin/llvm-config ${SYSROOT_DESTDIR}/${bindir} || bbfatal "missing llvm-config"
-    cp ${B}/NATIVE/bin/llvm-tblgen ${SYSROOT_DESTDIR}/${bindir} || bbfatal "missing llvm-tblgen"
+    #    cp ${B}/NATIVE/bin/llvm-tblgen ${SYSROOT_DESTDIR}/${bindir} || bbfatal "missing llvm-tblgen"
 }
 
 llvm_native_sysroot_preprocess() {
